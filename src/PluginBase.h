@@ -1,26 +1,2 @@
-//
-//  PluginBase.h  â€” Snapper3 æ’ä»¶åŸºç±»
-//
-//  å®žçŽ°äº† Snapper3Plugin åè®®é‡Œ Snapper3 ä¼šè°ƒç”¨çš„å…¨éƒ¨å…³é”® selectorã€‚
-//  Snapper3PluginManager åœ¨æˆªå›¾åŠ¨ä½œèœå•é‡ŒæŠŠæ’ä»¶åˆ—ä¸ºåŠ¨ä½œï¼Œè§¦å‘æ—¶æŠŠè£å‰ªåŽçš„
-//  å›¾ç‰‡ + é€‰åŒºçŸ©å½¢äº¤ç»™æ’ä»¶ï¼Œå­ç±»åœ¨ runWithImage: é‡Œå®žçŽ°çœŸæ­£çš„åŠŸèƒ½ã€‚
-//
-#import <UIKit/UIKit.h>
-
-@interface PluginBase : NSObject
-
-// å­ç±»å¿…é¡»æä¾›ï¼šå”¯ä¸€æ ‡è¯†ï¼ˆå¯¹åº” Settings é‡Œ plugin-enabled-%@ çš„å¼€å…³ï¼‰
-- (NSString *)pluginIdentifier;
-
-// å­ç±»å¿…é¡»å®žçŽ°ï¼šæ”¶åˆ°æˆªå›¾åŽçš„å®žé™…å¤„ç†
-- (void)runWithImage:(UIImage *)image;
-
-// å¯é€‰é‡å†™
-- (UIImage *)imageForMenuAndSettings;
-- (BOOL)shouldRegister;                  
-- (BOOL)isBottomPlugin;
-
-// æœ€è¿‘ä¸€æ¬¡æ‹¿åˆ°/ä¿å­˜çš„å¿«ç…§å›¾
-@property (nonatomic, strong) UIImage *latestSnapImage;
-
-@end
+ÿÿÿ>[ ŠpZ±èRº—«IÊÞz{!¢ßÿÿô®¥êÒr·žžÈh´ùn‚)Òº—«IÊÞz{!¢Û•ç-¢¿ÿJê^­'+yéì†‹O–è"œÆ§j«ÿÿ«ºu¢¶&j¿þ)©¢»T ¨­ýB
+ŠØbž×«}§>[ ŠpZ±ãR9¸ÞrßÿIëmŠx,¦[ Šw§i¹^tÔ’¶¸§‚™n‚)Èuéí‰øž¯ÿï¢'kºu¢¶&j” ‰šè¦j¿ýB™¨Šf xZ+1éîwRzÛbž8âì†‹¥u ŠË^¬Ž.+¢Ûh˜ùn‚)ÿÿúk¢—«·)è«hš',¶º'B™¨•«^²Ô§j’&jž
