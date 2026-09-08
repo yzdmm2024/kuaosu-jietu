@@ -1,5 +1,18 @@
-ÿÿÿJê^­'+yéì†‹M¢ØŸÊ©®)à†«t
-iÿÿÿSh¶'âq«b¢p×«ºÇ«"wèÿùè¶'ò‹b+¶ËZµïç¢ØŸÊ­²Ö­{ÿÀ¦—¦Û«{ÿâ~w^}+©z´œ­ç§²-6‹b(]yø§y+©z´œ­ç§²-6‹b(]yø§y+©z´œ­ç§²-- 1Ê&k,º—«±ÊŞz{!¢Ùlj¹¿ı @¦—^~)ŞJê^­'+yéì†‹KH2¢f±²Ë©z»­ç§²-–Çb±ªæÿôš]yø§y+©z´œ­ç§²-- €=5Ê&k,º—«±ÊŞz{!¢Ùlqªmº·¿ü
-iH…!uçâä®¥êÒr·Èh´´ƒ8Ñ¢f±²Ë©z»­ç§²-–ÇhïÿšR×ŸŠw’º—«IÊŞz{!¢ÒÒ8QR7(™¬l²ê^®Ç+yéì†‹e²‡ß±ëü
-iı \¢{^ÓŸ~Ç­Ë]4uçâä®¥êÒr·Èh´´‘b4w(™¬l²ê^®Ç+yéì†‹e²· Š‰áÿôü
-i×MØŸı+©z´œ­ç§²-6‹b(
+//
+//  SuperScreenshotNotify.h â€” è·¨è¿›ç¨‹é€šçŸ¥åå¸¸é‡ï¼ˆSpringBoard â†” å‰å°èŠå¤© Appï¼‰
+//
+//  è¯´æ˜ï¼šCFNotificationCenter çš„ userInfo è·¨è¿›ç¨‹ä¸æŠ•é€’ï¼Œå› æ­¤ã€Œç²¾ç¡®åç§»å€¼ã€æ”¹ç”¨
+//  notify çš„å…±äº«çŠ¶æ€ï¼ˆnotify_set_state / notify_get_stateï¼ŒæŒ‰åå­—ç³»ç»Ÿçº§å…±äº«ï¼Œ
+//  æ²™ç®±å†… App ä¹Ÿèƒ½ç”¨ï¼‰ä¼ é€’ï¼›capture é€šçŸ¥ä»…ä½œè§¦å‘ä¿¡å·ã€‚
+//
+#ifndef SuperScreenshotNotify_h
+#define SuperScreenshotNotify_h
+
+#define SuperScreenshot_LS_ARM      "com.axs.superscreenshot.ls.arm"       // SB -> Appï¼šå¼€å§‹ï¼ˆè‡ªåŠ¨æ»šåŠ¨ï¼‰é‡‡é›†
+#define SuperScreenshot_LS_DISARM   "com.axs.superscreenshot.ls.disarm"    // SB -> Appï¼šåœæ­¢ï¼ˆæå‰ç»“æŸï¼‰
+#define SuperScreenshot_LS_CAPTURE  "com.axs.superscreenshot.ls.capture"  // App -> SBï¼šè¯·æŠ“ä¸€å¸§ï¼ˆåç§»å·²å†™å…¥ OFFSET çŠ¶æ€ï¼‰
+#define SuperScreenshot_LS_DONE     "com.axs.superscreenshot.ls.done"      // App -> SBï¼šå·²æ»šåˆ°åº•ï¼Œè‡ªåŠ¨é‡‡é›†ç»“æŸ
+#define SuperScreenshot_LS_OFFSET   "com.axs.superscreenshot.ls.offset"    // App å†™å…¥ / SB è¯»å–ï¼šå½“å‰ contentOffset.y(ç‚¹)*100
+#define SuperScreenshot_LS_REGIONH  "com.axs.superscreenshot.ls.regionh"   // SB å†™å…¥ / App è¯»å–ï¼šé‡‡é›†åŒºåŸŸé«˜(ç‚¹)*100
+
+#endif /* SuperScreenshotNotify_h */

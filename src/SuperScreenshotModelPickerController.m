@@ -1,3 +1,123 @@
-ÿÿÿJê^­'+yéì†‹L¡×¥>'$z°¨Úè–W«˜?ş¶ŠÿŠjh®Ô®¥êÒr·Èh´ÊzT­¢·¡Šjh®Ğ¨šj'†)íz·Úqä®¥êÒr·Èh´ÊzSârG«
-‰í®‰ezµM¦åyXÀ7¥z­yBi¹^V'°«ZJ‹«qêk¢—«·)è«hš',¶º'€Ô’¶¸§÷š¶êŞ)ì©®Š^®Ü§¢v­¢hœ²ÚèRJÚâ”‡i®Š^®Ü§¢v­¢hœ²ÚèRºÚÈÔƒ‰Ëb¢v«Êjz[?şšè¥êíÊz'jÚ&‰Ë-®‰à5 +­¬H8œ¶*'j¼ŠÊL¡×¥³ÿÎ	ÚuÙ^8$i®Š^®Ü§¢v­¢hœ²ÚèM¦åyXÂÛé®Š^®Ü§¢v­¢hœjË"‚pN8¸¬8$i®Š^®Ü§¢v­¢hœjË"‚pN8¸Z°¢–Ø§ÿóÚuÙ^8$^Ø¦¦W¦z{Z¶*'Jê^­'+yéì†‹L¡×¥>'$z°¨Úè–W«Š{-jw·*^Šx­Z+aæ­º·Š{#RJÚâ	ÊØ­•ãRJÚâb¶W¢~Ç¥~Ë©z¸§Š×ŞjÛ«x§²‘ì¬zWíŠÙ^¶+ez·­º¹ìzWÁ8âå‰ºÚ¯!Ú°övW	è¬Ôƒ‰Ëb¢v«Êh§±é_š‡^–ÈŸJê^­'+yéì†‹L¡×¥'¥vkŞÚ+–Œ­Æ¬y+kŠx"°J®jTèJÚâ
-ZuÙ^¡ÊëzÛ«­ën®sN¾ˆ¾'°'K¡§lº—«¾'°'K¡§lzWï‰ìiÉ ®‹§t*%¢
+//
+//  SuperScreenshotModelPickerController.m â€” ä¸ºæŸä¸ªåŠŸèƒ½(é—®AI/è¯†åˆ«å¼•æ“/ç¿»è¯‘)é€‰æ‹©ã€Œä½¿ç”¨æ¨¡å‹ã€(radio)
+//
+#import "SuperScreenshotModelStore.h"
+#import "Common.h"
+
+@interface SuperScreenshotModelPickerController () <UITableViewDelegate, UITableViewDataSource>
+@property (nonatomic, strong) NSString *featureKey;
+@property (nonatomic, strong) NSString *selId;
+@property (nonatomic, strong) NSArray<NSDictionary *> *models;     // åº“é‡Œçš„æ¨¡å‹
+@property (nonatomic, strong) NSArray<NSDictionary *> *dispModels; // å®é™…å±•ç¤ºï¼ˆOCR æ—¶æœ«å°¾è¿½åŠ å†…ç½® PaddleOCRï¼‰
+@property (nonatomic, strong) UITableView *tv;
+@property (nonatomic, assign) BOOL isOCR;
+@property (nonatomic, assign) BOOL hasBuiltin; // æ˜¯å¦è¿½åŠ äº†å†…ç½® PaddleOCR è¡Œ
+@end
+
+@implementation SuperScreenshotModelPickerController
+
+- (instancetype)initWithFeatureKey:(NSString *)key title:(NSString *)title {
+    if (self = [super init]) {
+        _featureKey = key;
+        self.title = title;
+    }
+    return self;
+}
+
+- (BOOL)_libraryHasPaddleOCR {
+    for (NSDictionary *m in self.models) {
+        if ([[SuperScreenshotModelField(m, @"vendor", @"") lowercaseString] isEqualToString:@"paddleocr"]) return YES;
+    }
+    return NO;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    SuperScreenshotMigrateIfNeeded();
+    self.models = SuperScreenshotLoadModels();
+    self.selId  = [SuperScreenshotDefs() stringForKey:self.featureKey] ?: @"";
+    self.isOCR  = [self.featureKey isEqualToString:SuperScreenshot_K_OCR];
+
+    // OCR é€‰æ‹©å™¨ï¼šè‹¥åº“é‡Œè¿˜æ²¡ PaddleOCRï¼Œåˆ™åœ¨æœ«å°¾è¿½åŠ ä¸€ä¸ªã€Œå†…ç½® PaddleOCRã€é€‰é¡¹ï¼Œé€‰ä¸­å³èµ°å…è´¹é€šé“
+    NSMutableArray *disp = [self.models mutableCopy];
+    self.hasBuiltin = NO;
+    if (self.isOCR && ![self _libraryHasPaddleOCR]) {
+        self.hasBuiltin = YES;
+        [disp addObject:@{ @"id": XZ_PPOCR_SENTINEL,
+                           @"name": @"ç™¾åº¦ PaddleOCR (å…è´¹)",
+                           @"model": @"AI Studio å…è´¹ OCR",
+                           @"vendor": @"paddleocr",
+                           @"__builtin": @YES }];
+    }
+    self.dispModels = disp;
+
+    self.tv = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    self.tv.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.tv.delegate = self;
+    self.tv.dataSource = self;
+    [self.view addSubview:self.tv];
+}
+
+- (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)s {
+    return self.dispModels.count + 1; // +1 = ä¸ä½¿ç”¨(å…³é—­)
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
+    UITableViewCell *c = [tv dequeueReusableCellWithIdentifier:@"p"];
+    if (!c) c = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"p"];
+    c.accessoryType = UITableViewCellAccessoryNone;
+    if (ip.row == 0) {
+        c.textLabel.text = @"ä¸ä½¿ç”¨ï¼ˆå…³é—­è¯¥åŠŸèƒ½ï¼‰";
+        c.detailTextLabel.text = @"é€‰è¿™ä¸ªç­‰äºå…³é—­ AI / è¯†åˆ« / ç¿»è¯‘";
+        if (self.selId.length == 0) c.accessoryType = UITableViewCellAccessoryCheckmark;
+    } else {
+        NSDictionary *m = self.dispModels[ip.row-1];
+        c.textLabel.text = SuperScreenshotModelField(m, @"name", @"(æœªå‘½å)");
+        c.detailTextLabel.text = SuperScreenshotModelField(m, @"model", @"æœªè®¾æ¨¡å‹");
+        if ([self.selId isEqualToString:m[@"id"]]) c.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+    return c;
+}
+
+- (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)ip {
+    [tv deselectRowAtIndexPath:ip animated:YES];
+    NSString *pick = nil;
+    BOOL syncPPOCR_ON = NO;          // æ˜¯å¦åŒæ­¥æŠŠ PPOCR_Enabled æ‹‰åˆ° ON
+    BOOL isPaddleOCRRow = NO;        // picker é€‰ä¸­çš„è¡Œæ˜¯ PPOCRï¼ˆå†…ç½®è¡Œ / vendor=paddleocrï¼‰ï¼Ÿ
+    if (ip.row == 0) {
+        pick = @"";
+    } else {
+        NSDictionary *m = self.dispModels[ip.row-1];
+        id mid = m[@"id"];
+        pick = [mid isKindOfClass:[NSString class]] ? (NSString *)mid : @"";
+        BOOL isBuiltin = [m[@"__builtin"] boolValue];
+        NSString *vendor = SuperScreenshotModelField(m, @"vendor", @"");
+        isPaddleOCRRow = isBuiltin || [vendor isEqualToString:@"paddleocr"];
+    }
+    self.selId = pick;
+
+    // v6.16: è¯†åˆ«å¼•æ“ picker é€‰ä¸­åè‡ªåŠ¨åŒæ­¥ PPOCR_Enabledï¼Œé¿å…ã€Œå¼€å…³å¼€ç€é€‰å¤§æ¨¡å‹
+    //          â†’ ä»èµ° PP-OCRã€çš„è™šå‡ã€Œåˆ‡æ¢æ²¡å·®åˆ«ã€ã€‚
+    //   - é€‰ã€Œä¸ä½¿ç”¨ã€ / é€‰é paddleocr çš„æ™®é€šå¤§æ¨¡å‹ â†’ PPOCR_Enabled = NO
+    //   - é€‰å†…ç½® PaddleOCR / vendor=paddleocr â†’ PPOCR_Enabled = YES
+    // ï¼ˆä»…å¯¹ OCR é€‰æ‹©å™¨ç”Ÿæ•ˆï¼›é—®AI / ç¿»è¯‘ é€‰æ‹©å™¨ä¸åŠ¨è¿™ä¸ªé”®ï¼‰
+    if (self.isOCR) {
+        [SuperScreenshotDefs() setBool:isPaddleOCRRow forKey:@"PPOCR_Enabled"];
+        syncPPOCR_ON = YES;
+    }
+
+    [SuperScreenshotDefs() setObject:pick forKey:self.featureKey];
+    [SuperScreenshotDefs() synchronize];
+    if (syncPPOCR_ON) {
+        // ä¸å¿…å†å‘ä¸€æ¬¡ darwin notify:åŒä¸€ç»„ setObject:synchronize åé¢çš„ç»Ÿä¸€ä¸€æ¬¡ post
+    }
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
+                                         (CFStringRef)@"com.axs.superscreenshot.prefsChanged", NULL, NULL, YES);
+    [self.tv reloadData];
+    // å»¶è¿Ÿè¿”å›ï¼Œè®©ç”¨æˆ·çœ‹åˆ°å‹¾é€‰
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^{ [self.navigationController popViewControllerAnimated:YES]; });
+}
+
+@end

@@ -1,5 +1,67 @@
-ÿÿÿ>[ ŠpZ±é¿ş)©¢»O–è"œ¬z¦¦Ší
-‰¦¢xbš™^™éíjØ¨œùn‚)ÁjÇ©­¨&jf«‘+©z´œ­ç§²-5$­®)à¦[ Šrz{b~'«­ën®pN8»!¢é]Eè"²×«­ën®vH.+¢Ûh˜ùn‚)ëzÛ«œÓI+kŠx.®Tœ…éŠÏ–è"·­º¹çŠ[è‰ÛµJåIÈ^™áh¬ùn‚)ÍI+kŠx,P‚&j¢™¨ŠÌz{€Ô¶Ø§‚ÊŞ¶êç
-‰¦¢{2²×¦!Ê'v‡-{o‰ìŠw^¯ÿÒº—«IÊŞz{!¢ß¾¾ˆÁ©í±:ªQyËBœ¶·œ¶)È™¨P‚&j¢™¨¶§ƒåº§¾ˆ¾ˆr‰©•ëb¢{•÷^–+Ş¬‰šè¦j¢}Ê&¦W­Š‰Ü¢jezØ¨ú"w§¶ÄèJv©Eç-d^rÚŞrØ§"f yB™¨Šf zØ^œ:"uÊ&¦W­Š‰ìzWİzX¯z²&j¢™¨¾ˆÁ©í±:ªQyËBœ¶·œ¶)È™¨P‚&j¢™¨±é_uéb½êÈ™¨Šf zú"v—«~Šæ>[ Šs§-«^²Ô§j˜j¸?ı)Ú¦—«Oš“¡¢‰"~Ç¥~V­zËRªH™¨±é_uéb½êÈ™¨±é_•«^²Ô§j’&j¯¢'lzwE¢³åº§‰Ö«‚'ìzWåj×¬µ)Ú¤‰šë•÷^–+Ş¬‰šë•ùZµë-Jv©"f {ÿÒº—«IÊŞz{!¢ßï¢'lªRz{S 
-i–'¶*'¾ˆ²v©Z)eI«Ş¾ˆ²v©
-§ço¢'lªB–‹vú"vÉÚ¤Ê/yÛè‰×¦j)o¢'mÂ+mz»è‰ÜnÈ­zú"v)ß Ô’¶¸§‚v¦z·­º¹ÍI+kŠx®‰‚•«,±é_rV¬²ú"vÈhÀ‰ÒzÛb)­¨&jf«’Ì§¶¬‹7¥j×¬µ)Ú¤‰š
+//
+//  PluginBase.m
+//
+#import "PluginBase.h"
+#import "Common.h"
+
+@implementation PluginBase
+
+#pragma mark - ä¾› SuperScreenshot è°ƒç”¨çš„åè®®æ–¹æ³•
+
+- (NSString *)pluginIdentifier { return @""; }
+
+- (BOOL)shouldRegister { return YES; }
+- (BOOL)isBottomPlugin { return NO; }
+- (NSString *)urlSchemeForPlugin { return nil; }
+- (void)setUrlSchemeForPlugin:(NSString *)s { }
+- (UIImage *)imageForMenuAndSettings { return [Common systemIcon:@"doc.text.viewfinder"]; }
+
+// SuperScreenshot è§¦å‘æ’ä»¶ï¼šé€‰åŒº + æ•´å¼ å›¾ + å®Œæˆå›è°ƒ
+- (void)wantsToSnapRect:(CGRect)rect inImage:(UIImage *)image thenDoPlugin:(void (^)(void))completion {
+    [self deliverImage:image];
+    if (completion) completion();
+}
+
+- (void)wantsToSnapRect:(CGRect)rect inImage:(UIImage *)image thenDo:(id)completion {
+    [self deliverImage:image];
+}
+- (void)wantsToSnapRect:(CGRect)rect inImage:(UIImage *)image {
+    [self deliverImage:image];
+}
+- (void)performPluginOnLatestSnap:(id)arg {
+    // æ‹¿ä¸åˆ°å›¾ç‰‡æ—¶å°è¯•ä»æœ€æ–° Snapper å¿«ç…§æˆªå–ï¼ˆè§ Tweak.xm é‡Œçš„å…œåº• hookï¼‰
+    if (self.latestSnapImage) [self deliverImage:self.latestSnapImage];
+}
+- (void)sendForPlugin:(id)arg {
+    if (self.latestSnapImage) [self deliverImage:self.latestSnapImage];
+}
+
+// å…¶å®ƒ SuperScreenshot å¯èƒ½è°ƒç”¨çš„ç”Ÿå‘½å‘¨æœŸ/è®¾ç½®æ–¹æ³•
+- (void)snapSentToApplication { }
+- (void)snapWillSave { }
+- (void)snapChanged { }
+- (void)snapClosed { }
+- (void)snapMoved { }
+- (void)email { }
+- (void)twitter { }
+- (void)website { }
+- (void)info { }
+- (NSString *)name { return NSStringFromClass(self.class); }
+- (void)showInSettings { }
+
+#pragma mark - å†…éƒ¨
+
+@synthesize latestSnapImage = _latestSnapImage;
+
+- (void)deliverImage:(UIImage *)image {
+    if (image) {
+        self.latestSnapImage = image;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self runWithImage:image];
+        });
+    }
+}
+
+- (void)runWithImage:(UIImage *)image { }
+
+@end

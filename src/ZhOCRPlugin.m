@@ -1,3 +1,29 @@
-ÿÿÿf‚Dùn‚)æJê^­'+yéì†‹N	b²*'ÿø¦¦Šíf‚Dùn‚)áŠjh®Õb²*'8$aŠjh®Ó‚D1Z)İ£bšš+´*&š‰áŠjezg§µ«b¢va8$O–è"œÔ’¶¸§‚™n‚)Èuéí‰ø®·­º¹×d€Î	N8»!¢é]Eè"²×«­ën®vIB™¨Šf xZ+1éîwRzÛb+zÛ«œ*&š‰ìÊË^˜‡(×±¶øÁø§uêï¢'kºu¢¶&j” ‰šè¦j¢~)šêŞ¶êç
-‰¦¢{hjËN	b²*'8$kyÊ ,ŞZ’È¦j¥jx.j¬
-‰¦¢z¬¶§‚æ zÇ(š™^¶*'5 +­¬	e¡É–‡$²'Û–‡$±Ê.Ğ¨šj'¶†¬¶·­º¹Î	hÅh§vŒ,†Œ¢²&j¢™¨nZ’Æå¡É,zw
+//
+//  ZhOCRPlugin.m â€” æ³¨å†Œè¿› SuperScreenshot åŠ¨ä½œèœå•çš„â€œOCRâ€é¡¹ï¼Œä½¿ç”¨æœ¬åœ° Vision ä¸­æ–‡è¯†åˆ«
+//
+#import "ZhOCRPlugin.h"
+#import "VisionOCR.h"
+#import "OCRBoxWindow.h"
+#import "Common.h"
+
+@implementation ZhOCRPlugin
+
+- (NSString *)pluginIdentifier { return XZ_ID_OCR; }
+
+- (BOOL)shouldRegister { return YES; }
+
+- (UIImage *)imageForMenuAndSettings { return [Common systemIcon:@"text.viewfinder"]; }
+
+- (void)runWithImage:(UIImage *)image {
+    if (!image) return;
+    [Common toast:@"OCRè¯†åˆ«ä¸­â€¦"];
+    [VisionOCR recognizeBlocks:image languages:[Common ocrLanguages] completion:^(NSArray<OCRBlock *> *blocks) {
+        if (!blocks.count) {
+            [Common toast:@"æœªè¯†åˆ«åˆ°æ–‡å­—"];
+            return;
+        }
+        [OCRBoxWindow showForImage:image blocks:blocks];
+    }];
+}
+
+@end

@@ -1,2 +1,18 @@
-Šjh®Õ*+P‚¢¶¦¦Ší‹§u«b¢Å¢éİjØ¨¦¦Ší>·Ÿz·§që?>·Ÿz·§që!ÿøI+©z´œ­ç§²-Š{^­öœy+©z´œ­ç§²->·Ÿ°*'¶º%•êÏH¸¬´*'¶º%•êŞØ¦¦W¦z{Z¶*'Jê^­'+yéì†‹O­çì
-‰í®‰ez¿ÿ±ëR¥ç"~'«±(¶™b²Û)yÈŸ‰êìÿû)yÈŸ‰êì="â²Ğ¨Úè–W«Šö«¾ˆ¾'°'K¡§lº—«¾'°'K¡§lzWì¥ç"~'«²Ç¥~Zu*^r'âz»®‰–+-5©FŠ-µªàzÛ•÷§
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <Preferences/Preferences.h>
+
+// è®¾ç½®é¢æ¿ä¸»æ§åˆ¶å™¨ï¼šiOS è®¾ç½® â†’ SuperScreenshotå»¶ä¼¸æ¿
+@interface SuperScreenshotPrefsController : PSListController
+@end
+
+@implementation SuperScreenshotPrefsController
+
+// ç”¨æ¡†æ¶è‡ªå¸¦çš„ setSpecifiers: æŠŠ Root.plist è§£æå‡ºçš„ specifiers å†™å…¥æ¡†æ¶å†…éƒ¨å­˜å‚¨ï¼Œ
+// é¿å…å­ç±»é‡å¤å£°æ˜ _specifiers ä¸ PSListController çˆ¶ç±» ivar å†²çªï¼ˆé‚£ä¸ªå†²çªä¼šè®©é¢æ¿ç©ºç™½ï¼‰ã€‚
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+}
+
+@end
